@@ -1,0 +1,20 @@
+PDF processing :
+    1. Read a pdf and extract images from it.
+    2. Run OCR on the image and extract text
+    3. Overlay the text on the original pdf
+
+Website :
+    1. Initialize the website ( the flask project)
+        a. Make the routing work. 
+        b. Load a simple html template.
+    2. Accept input pdf files from the website..
+        a. Front end part.
+        b. Hook up the backend part.
+    3. Scan via camera.  
+        a. Add the ability to scan it via camera on the frontend part
+        b. hook is to the backend (so that the captured image goes to the backend)
+    4. Pdf processing.
+        a. create an application that takes in a pdf
+        b. extracts images from the pdf
+        c. runs ocr on the images
+        d. writes the extracted text to another file.
