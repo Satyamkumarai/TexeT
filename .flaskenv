@@ -1,4 +1,4 @@
 
-FLASK_APP=texet
+FLASK_APP=texet:create_app
 FLASK_ENV=development
 FLASK_RUN_PORT=3000

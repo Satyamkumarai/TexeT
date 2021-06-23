@@ -15,7 +15,6 @@ flask run
 .
 ├── env
 ├── execute_me.bat
-├── image2pdf.py        #this is just temporary
 ├── README.md           #THIS FILE 
 ├── requirements.txt
 ├── sample           #this is just temporary things 

@@ -1,6 +1,6 @@
 from flask import Flask
 from .main.routes import bp
-def create_app():
+def create_app(testing:bool = True):
     #init app
     app = Flask(__name__)
 
