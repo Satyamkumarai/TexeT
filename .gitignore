@@ -5,6 +5,7 @@
 *.pyo
 env/
 venv/
+win_env/
 .venv/
 env*
 dist/
