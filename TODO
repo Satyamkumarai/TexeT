@@ -18,3 +18,6 @@ Website :
         b. extracts images from the pdf
         c. runs ocr on the images
         d. writes the extracted text to another file.
+
+Remember To :
+    * remove .env .flaskenv files
