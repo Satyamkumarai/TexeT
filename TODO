@@ -1,8 +1,24 @@
-PDF processing :
-    1. Read a pdf and extract images from it.
-    2. Run OCR on the image and extract text
-    3. Overlay the text on the original pdf
+Problems to Tackle:
+    * Getting it scan multiple files from the camera.
+    * Uploading all of them to the server.
+    * Converting those images to pdfs after running document recognition on it. 
+    ** Storage of the pdf? 
+        - Volumes ? shared ? 
+    * Creating the API Server for Processing of the uploaded/created pdf 
+    * Retriving the pdf once it's Processed 
+    * User indications of the processing ?!..
 
+    Future Enhancements..
+    * HTTPS ? 
+    * NGINX LoadBalancer ?
+
+** : Most Urgent To figure out !
+* A Bit easier 
+
+    
+
+PDF processing :
+    Just use ocrmypdf from pypy
 Website :
     1. Initialize the website ( the flask project)
         a. Make the routing work. 
@@ -21,3 +37,8 @@ Website :
 
 Remember To :
     * remove .env .flaskenv files
+
+Plan : 
+    * A flask App just for the scanning and uploading the files in a docker container
+    * Another Docker container that hosts another flask server that can process the pdf file and send it back
+    
