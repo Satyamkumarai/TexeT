@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+<h1>Scan Document</h1>
+{% block content%}
+<script defer src="{{url_for('static',filename='js/scan.js')}}"></script>
+<!-- Camera -->
+<main id="camera">
+    <!-- Camera sensor -->
+    <!-- <canvas id="camera--sensor"></canvas> -->
+    
+    <!-- Camera view -->
+    <!-- <video id="camera--view" autoplay playsinline></video> -->
+    
+    <!-- Camera output -->
+    <!-- <img src="//:0" alt="" id="camera--output"> -->
+    <!-- Camera trigger -->
+    <!-- <button id="camera--trigger">Take a picture</button> -->
+    <!-- <input type="file" name="image" accept="image/*" capture="environment"> -->
+    <input type="file" accept="image/*"  multiple>
+    Cheeck out ! : <a href="https://developers.google.com/web/fundamentals/media/capturing-images">This </a>
+
+</main>
+{% endblock content%}

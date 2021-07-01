@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block headContent%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/basic.min.css" />
+<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
+</script>
+
+
+{% endblock %}
+{% block content %}
+<h2>
+	Drop Multiple files 
+	And click the corresponding Download links
+</h2>
+<div style="max-width: 50vw;">
+
+	<form method="POST" action='/pdf/upload' class="dropzone dz-clickable" id="dropper" enctype="multipart/form-data">
+	</form>
+</div>
+<script>
+	Dropzone.options.dropper = {
+		init: function () {
+		},
+		success:function(file,response){
+			//parse the response 
+			response = JSON.parse(response)
+			if (response.error == 0){
+			//add the download link if successful!   This basically adds divs with a tags containing the download links
+				div = document.createElement('div')
+				a = document.createElement('a')
+				a.href = response.downloadUrl
+				a.text= file.name
+				div.appendChild(a)
+				document.getElementById('downloadlinks').appendChild(div)
+			}
+			return file.previewElement.classList.add("dz-success");
+		},
+		paramName: "file", // The name that will be used to transfer the file
+		acceptedFiles: "application/pdf",
+		accept: function (file, done) {
+			done()
+		}
+	};
+</script>
+
+
+<div id="downloadlinks">
+
+</div>
+{% endblock %}

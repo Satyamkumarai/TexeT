@@ -2,12 +2,12 @@ Problems to Tackle:
     * Getting it scan multiple files from the camera. : check out: https://web.dev/read-files/
     * Uploading all of them to the server.
     * Converting those images to pdfs after running document recognition on it. 
-    ** Storage of the pdf? 
+    ** Storage of the pdf?  
         - Volumes ? shared ? Use This ? :https://softwareengineering.stackexchange.com/questions/233959/design-of-high-performance-file-processing-web-application#
     * Creating the API Server for Processing of the uploaded/created pdf 
     * Retriving the pdf once it's Processed 
     * User indications of the processing ?!..
-
+    https://stackoverflow.com/questions/64650119/react-error-sharedarraybuffer-is-not-defined-in-firefox
     Future Enhancements..
     * HTTPS ? 
     * NGINX LoadBalancer ?
