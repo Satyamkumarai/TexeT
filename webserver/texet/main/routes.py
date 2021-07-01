@@ -20,7 +20,7 @@ def root():
     
 
 @bp.route('/uploadpdf',methods=['GET'])
-def uploadpdf():
+def uploadpdf( ):
     return render_template("upload/upload.html")
 
 @bp.route('/scan',methods=['GET'])
