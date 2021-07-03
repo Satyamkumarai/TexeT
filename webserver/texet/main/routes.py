@@ -1,5 +1,7 @@
 import uuid
+import os
 from texet.main.constants import FileStatus
+from texet.settings import DOWNLOAD_FOLDER,PDF_UPLOAD_FOLDER,IMAGE_UPLOAD_FOLDER
 from bson.objectid import  ObjectId
 from flask import (
     Blueprint,
@@ -8,9 +10,12 @@ from flask import (
     redirect,
     url_for,
     Response,
-    json)
+    json,
+    send_from_directory)
 from texet.extensions import mongo                  #The mongo client!
 from .ocr import allowed_file ,do_ocrmypdf
+from werkzeug.utils import secure_filename
+from flask import current_app
 
 bp = Blueprint('main',__name__)
 
@@ -41,8 +46,7 @@ def add_file_to_db(file):
         "origfilename":file.filename
     }
     mongo.db.queue.insert_one(task)
-    download_url = url_for('main.download_pdf',uuid=unique_filename)
-    return download_url
+    return unique_filename
 @bp.route('/test')
 def testdb():
     docs = mongo.db.queue.count()
@@ -56,6 +60,7 @@ def json_resp(msg,error=0,url=""):
     if url:
         payload["downloadUrl"]=url
     return json.dumps(payload)
+from subprocess import PIPE, run
 @bp.route("/pdf/upload",methods=['POST'])
 def process_pdf():
     if request.method == "POST":
@@ -67,9 +72,12 @@ def process_pdf():
         if not allowed_file(file.filename):
             return Response(json_resp("Invalid filename",1), 400, mimetype='application/json')
         if file and allowed_file(file.filename):
-            
-            url  = add_file_to_db(file)   # set the status to upload
-            return Response(json_resp("File Uploaded!",0,url))
+            file_uuid  = add_file_to_db(file)   # set the status to upload
+            #save the file locally 
+            file.save(os.path.join(current_app.instance_path, PDF_UPLOAD_FOLDER, secure_filename(file_uuid+".pdf")))
+            run(["cp",os.path.join(current_app.instance_path, PDF_UPLOAD_FOLDER, secure_filename(file_uuid+".pdf")),os.path.join(current_app.instance_path, DOWNLOAD_FOLDER, secure_filename(file_uuid+"-download.pdf"))])            
+            download_url = url_for('main.download_pdf',uuid=file_uuid)
+            return Response(json_resp("File Uploaded!",0,download_url))
         return Response(json_resp("Some other problem",1), 400, mimetype='application/json')
 
 
@@ -80,6 +88,8 @@ def download_pdf(uuid):
         status = work_doc.get('status')
         if status == FileStatus.uploaded.value:
             return "Server Busy wait till your file gets processed !"
+        elif status == FileStatus.success.value:
+            return  send_from_directory(os.path.join(current_app.instance_path, DOWNLOAD_FOLDER),str(work_doc['output'])+".pdf")
         else :
             return status
     return Response(json_resp("File Not Found!",1),404,mimetype="application/json")

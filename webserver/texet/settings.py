@@ -16,6 +16,14 @@ dbname = getenv('DB_NAME')
 
 admin_access_key = getenv('ADMIN_ACCESS_KEY')
 
+PDF_UPLOAD_FOLDER = getenv('PDF_UPLOAD_FOLDER')
+IMAGE_UPLOAD_FOLDER = getenv('IMAGE_UPLOAD_FOLDER')
+DOWNLOAD_FOLDER = getenv('DOWNLOAD_FOLDER')
+#Handling defaults..
+if PDF_UPLOAD_FOLDER == None:
+    PDF_UPLOAD_FOLDER = "uploaded/pdf"
+if IMAGE_UPLOAD_FOLDER == None:
+    IMAGE_UPLOAD_FOLDER = "uploaded/image"
 #init firebase settings
 # firebase_config = {
 #     'apiKey':getenv('FIREBASE_APIKEY'),
