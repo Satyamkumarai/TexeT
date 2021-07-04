@@ -1,5 +1,8 @@
 
 import os
+import uuid
+import json
+from texet.main.constants import FileStatus
 import shlex
 from subprocess import PIPE, run
 from tempfile import TemporaryDirectory
@@ -21,11 +24,18 @@ app.secret_key = "secret"
 app.config['MAX_CONTENT_LENGTH'] = 50_000_000
 app.config.from_envvar("OCRMYPDF_WEBSERVICE_SETTINGS", silent=True)
 
-ALLOWED_EXTENSIONS = set(["pdf"])
+ALLOWED_EXTENSIONS_PDF = set(["pdf"])
+ALLOWED_EXTENSIONS_IMG = set(['png', 'jpg', 'jpeg'])
 
 
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+def allowed_file(filename,image=False):
+    if image:
+        return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS_IMG
+    else :
+        return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS_PDF
+
+
+
 
 
 def do_ocrmypdf(file):
@@ -52,3 +62,33 @@ def do_ocrmypdf(file):
     return send_from_directory(downloaddir.name, filename)
 
 
+
+
+#refactor this //
+def add_file_to_db(image=False):
+    """returns a unique uuid after adding it to the db"""
+
+    unique_filename = str(uuid.uuid4())
+    upload_filename = unique_filename
+    download_filename = unique_filename+"-download"
+    task = {
+        "input":unique_filename,
+        "output":download_filename,
+        "isImage":image,
+        "status":FileStatus.uploaded.value
+    }
+    return unique_filename
+
+
+
+
+    
+def json_resp(msg,error=0,url=""):
+    """add the message and return jsonobj as  string"""
+    payload = {"message":msg,
+        "error":error,
+    }
+
+    if url:
+        payload["downloadUrl"]=url
+    return json.dumps(payload)
