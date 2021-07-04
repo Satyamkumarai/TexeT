@@ -69,10 +69,12 @@ def download_pdf(uuid):
         status = work_doc.get('status')
         if status == FileStatus.uploaded.value:
             return "Server Busy wait till your file gets processed !"
+        elif status == FileStatus.processing.value:
+            return "Your File is being Processed Please wait.."
         elif status == FileStatus.success.value:
             return  send_from_directory(os.path.join(current_app.instance_path, DOWNLOAD_FOLDER),str(work_doc['output'])+".pdf")
-        else :
-            return status
+        elif status == FileStatus.error.value :
+            return "An Error Occured While Processing your file.. Please Reupload it and try again later"
     return Response(json_resp("File Not Found!",1),404,mimetype="application/json")
 
 
