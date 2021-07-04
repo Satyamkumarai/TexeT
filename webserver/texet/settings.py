@@ -24,6 +24,8 @@ if PDF_UPLOAD_FOLDER == None:
     PDF_UPLOAD_FOLDER = "uploaded/pdf"
 if IMAGE_UPLOAD_FOLDER == None:
     IMAGE_UPLOAD_FOLDER = "uploaded/image"
+if DOWNLOAD_FOLDER == None:
+    DOWNLOAD_FOLDER = "dowload/"
 #init firebase settings
 # firebase_config = {
 #     'apiKey':getenv('FIREBASE_APIKEY'),

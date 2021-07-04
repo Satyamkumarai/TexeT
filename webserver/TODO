@@ -51,3 +51,7 @@ Plan :
     * A flask App just for the scanning and uploading the files in a docker container
     * Another Docker container that hosts another flask server that can process the pdf file and send it back
     
+
+* Create AN Index on "createdOn" and "uuid" 
+* Create a TTL index on "endTime"
+http://learnmongodbthehardway.com/schema/queues/

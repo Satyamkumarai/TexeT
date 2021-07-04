@@ -17,7 +17,7 @@ from texet.extensions import mongo                  #The mongo client!
 from texet.main.utils import allowed_file ,do_ocrmypdf , json_resp ,add_file_to_db
 from werkzeug.utils import secure_filename
 from flask import current_app
-
+from texet.main.schema import Task
 bp = Blueprint('main',__name__)
 
 
@@ -64,17 +64,22 @@ def testdb():
 #Pdf Download 
 @bp.route("/pdf/download/<uuid>" ,methods=['GET'])
 def download_pdf(uuid):
-    work_doc = mongo.db.queue.find_one({"input":uuid})
+    work_doc = mongo.db.queue.find_one({"uuid":uuid})
     if work_doc:
-        status = work_doc.get('status')
-        if status == FileStatus.uploaded.value:
-            return "Server Busy wait till your file gets processed !"
-        elif status == FileStatus.processing.value:
-            return "Your File is being Processed Please wait.."
-        elif status == FileStatus.success.value:
-            return  send_from_directory(os.path.join(current_app.instance_path, DOWNLOAD_FOLDER),str(work_doc['output'])+".pdf")
-        elif status == FileStatus.error.value :
-            return "An Error Occured While Processing your file.. Please Reupload it and try again later"
+        if work_doc.get('startTime',None) == None:  #File not yet started to be processed..
+            return Response(json_resp("File waiting to be processed in the queue",0),200,mimetype="application/json")
+        if work_doc.get('endTime',None) == None:    #File processing started but yet to be finished
+            return Response(json_resp("File is being Processed Please Wait",0),200,mimetype="application/json")
+
+        #The file has been processed 
+        path_to_download_dir = os.path.join(current_app.instance_path, work_doc['output'])
+
+        download_filename = work_doc['uuid'] + "-download" + ".pdf"
+
+        path_to_file = os.path.join(path_to_download_dir,download_filename) #DEBUG
+        print("Returning file ",path_to_file) #DEBUG
+        return  send_from_directory(path_to_download_dir,download_filename)
+
     return Response(json_resp("File Not Found!",1),404,mimetype="application/json")
 
 
@@ -106,12 +111,7 @@ def process_pdf():
             print("Saving the file to %s " % local_filename)  #DEBUG
 
             #set the data for the queeue
-            task = {
-                "input":file_uuid,
-                "output":file_uuid+"-download",
-                "isImage":False,
-                "status":FileStatus.uploaded.value
-            }
+            task = Task(file_uuid,False).to_dict()
 
 
 
@@ -173,13 +173,7 @@ def upload_images():
             print(f"Saving -- \t {local_save_filename}") #DEBUG
 
         #once all the files have been saved upload the task to the image queue
-        image_task = {
-                "input":folder_uuid,                        #The input is the folder containting the image files
-                "output":folder_uuid,                       #the output is the pdf file name that will be futher processed...
-                "isImage":True,                             #this means that the task is and image_processing one ..
-                "status":FileStatus.uploaded.value,
-                "numOfImages":count
-            }
+        image_task = Task(folder_uuid,True).to_dict()
 
         #upload the task
         mongo.db.queue.insert_one(image_task)
