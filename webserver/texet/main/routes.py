@@ -175,7 +175,8 @@ def upload_images():
                 "input":folder_uuid,                        #The input is the folder containting the image files
                 "output":folder_uuid,                       #the output is the pdf file name that will be futher processed...
                 "isImage":True,                             #this means that the task is and image_processing one ..
-                "status":FileStatus.uploaded.value
+                "status":FileStatus.uploaded.value,
+                "numOfImages":count
             }
 
         #upload the task
@@ -187,3 +188,5 @@ def upload_images():
         download_url = url_for('main.download_pdf',uuid=folder_uuid)
         print("Returned Download UUID %s ",download_url)  #DEBUG
         return Response(json_resp("File Uploaded!",0,download_url))
+
+

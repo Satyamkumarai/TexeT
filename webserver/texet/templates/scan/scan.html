@@ -3,23 +3,54 @@
 {% block content%}
 <script defer src="{{url_for('static',filename='js/scan.js')}}"></script>
 <!-- Camera -->
-<main id="camera">
-    <!-- Camera sensor -->
-    <!-- <canvas id="camera--sensor"></canvas> -->
-    
-    <!-- Camera view -->
-    <!-- <video id="camera--view" autoplay playsinline></video> -->
-    
-    <!-- Camera output -->
-    <!-- <img src="//:0" alt="" id="camera--output"> -->
-    <!-- Camera trigger -->
-    <!-- <button id="camera--trigger">Take a picture</button> -->
-    <!-- <input type="file" name="image" accept="image/*" capture="environment"> -->
-    <form action="/images/upload" method="post" enctype="multipart/form-data">
-        <input type="file" accept="image/*"  multiple name="images" capture>
-        <button type="submit">Upload!</button>
-    </form>
-    Cheeck out ! : <a href="https://developers.google.com/web/fundamentals/media/capturing-images">This </a>
-    
-</main>
+<form id='main-form' action="#" method="post" enctype="multipart/form-data">
+    <input id='fileInput' type="file" accept="image/*" multiple name="images" capture>
+    <button id="submitButton" type='submit'>
+        Submit
+    </button>
+</form>
+<div id="downloadlinks"></div>
+<div id='file-list-display'></div>
+<script>
+    const form = document.getElementById('main-form')
+    const submitBtn = document.querySelector("#submitButton");
+    const fileListDiv = document.querySelector("#file-list-display");
+    const fileDownloadDiv = document.querySelector("#download_files")
+    const fileInput = document.querySelector("#fileInput");
+    const uploadFile = (files) => {
+        console.log("Uploading file...");
+        const API_ENDPOINT = "{{url_for('main.upload_images')}}";
+        const request = new XMLHttpRequest();
+        const formData = new FormData();
+
+        request.open("POST", API_ENDPOINT, true);
+        request.onreadystatechange = () => {
+            if (request.readyState === 4 && request.status === 200) {
+                response = JSON.parse(request.responseText)
+                if (response.error == 0) {
+                    //add the download link if successful!   This basically adds divs with a tags containing the download links
+                    div = document.createElement('div')
+                    a = document.createElement('a')
+                    a.href = response.downloadUrl
+                    a.text = "Click Here To Download PDF"
+                    div.appendChild(a)
+                    document.getElementById('downloadlinks').appendChild(div)
+                }
+                form.reset()
+            }
+        };
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images', files[i])
+        }
+        request.send(formData);
+    };
+
+    submitButton.addEventListener("click", event => {
+        event.preventDefault();
+        const files = fileInput.files;
+        uploadFile(files);
+    });
+
+</script>
 {% endblock content%}
