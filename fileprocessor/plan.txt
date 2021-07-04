@@ -1,0 +1,22 @@
+Create a Finite Automaton
+
+
+States :
+    init : 
+        - Create the DB connection
+        - Go to busy state
+    
+    busy :
+        - Fetch Document one by one from FIFO and Process Them
+        - No document available :
+            - go to wait1 state
+    
+    wait1:
+        - Retry Fetching documents 5 times with an interval of 5s.
+        - Max retries reaached : 
+            - go to watch state
+        
+    watch:
+        - Open a watch Stream and look for inserts to the collection
+        - When a insert event occurs:
+            - wait random(1,3)s and go to busy
