@@ -72,6 +72,8 @@ def download_pdf(uuid):
             return Response(json_resp("File is being Processed Please Wait",0),200,mimetype="application/json")
 
         #The file has been processed 
+        if work_doc.get('error'):
+            return Response(json_resp("An Error Occured while processing the file ",0),200,mimetype="application/json")
         path_to_download_dir = os.path.join(current_app.instance_path, work_doc['output'])
 
         download_filename = work_doc['uuid'] + "-download" + ".pdf"
