@@ -3,7 +3,6 @@ import pymongo
 from bson.objectid import ObjectId
 import time 
 from settings import username,password,dbname
-from constants import FileStatus
 from time import sleep
 from datetime import datetime
 import os
@@ -46,10 +45,16 @@ def initState(currentState):
     global client , db , collection
 
     print("<<INIT>>")#DEBUG
-    client = MongoClient(f"mongodb+srv://{username}:{password}@cluster0.70rhn.mongodb.net/{dbname}?retryWrites=true&w=majority")
     print(f"mongodb+srv://{username}:{password}@cluster0.70rhn.mongodb.net/{dbname}?retryWrites=true&w=majority")
+    connected = False
+    client = None
+    while not connected:
+        client = MongoClient(f"mongodb+srv://{username}:{password}@cluster0.70rhn.mongodb.net/{dbname}?retryWrites=true&w=majority")
+        connected = not  client == None
+
     db = client.texet
     collection = db.queue
+    print(collection)
     return 'busy'
 
 

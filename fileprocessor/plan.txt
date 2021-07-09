@@ -23,4 +23,5 @@ States :
 
 
 TODO :
-    MAKE INSTANCE FOLDER GENERIC
+    MAKE INSTANCE FOLDER GENERICdocker run -it -v $(pwd):/fileprocessor -v $(pwd)/../webserver/:/webserver  fileprocessor
+This is to run the docker image (for now)
