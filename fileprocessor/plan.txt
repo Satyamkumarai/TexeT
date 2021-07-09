@@ -20,3 +20,7 @@ States :
         - Open a watch Stream and look for inserts to the collection
         - When a insert event occurs:
             - wait random(1,3)s and go to busy
+
+
+TODO :
+    MAKE INSTANCE FOLDER GENERIC

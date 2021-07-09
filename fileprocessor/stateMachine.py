@@ -1,41 +1,18 @@
+# from pymongo import MongoClient
+# import pymongo
+# from bson.objectid import ObjectId
+# import time 
+# from settings import username,password,dbname
+# from constants import FileStatus
+# from time import sleep
 
-#The States ..
-count = 0
-def initState(currentState):
-    print("init ")
-    return 'busy'
 
-def busyState(currentState):
-    global count 
-    print("busy-->%d"%count)
-    count+=1
-    return 'wait'
+# class FileProcessor:
+#     def __init__(self):
+#         self.client = 
+#         self.db
+#         self.collection
 
-def waitState(currentState):
-    print("wait")
-    return 'watch'
-
-def watchState(currentState):
-    print('watch')
-    global count
-    if count < 5:
-        return 'busy'
-    return 'end'
-
-states = {
-    'init':initState,
-    'busy':busyState,
-    'wait':waitState,
-    'watch':watchState
-}
-
-#start state
-startState = states['init']
-currentState = startState
-nextState = startState(currentState)
-while 1 :
-    if nextState!='end':
-        nextState = states[nextState](nextState)
-    else:
-        break
-            
+#     def initState(self,username ,password,dbname):
+#         """Create the db Connection"""
+#         self.client = MongoClient(f"mongodb+srv://{username}:{password}@cluster0.70rhn.mongodb.net/{dbname}?retryWrites=true&w=majority")
