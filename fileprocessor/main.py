@@ -58,7 +58,7 @@ def initState(currentState):
     print(collection)
     uuid_index = collection.create_index([("uuid",1)])
     createdOn_index = collection.create_index([("createdOn",1)])
-    ttl_endTime_index = collection.create_index([("endTime",1)],expireAfterSeconds=TTL_INDEX_EXPIRE_TIME)
+    
     print(f"Creating indexes {uuid_index} {createdOn_index}")
     for index in collection.list_indexes():
         print(index)
