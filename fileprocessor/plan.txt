@@ -11,7 +11,7 @@ States :
         - No document available :
             - go to wait1 state
     
-    wait1:
+    wait:
         - Retry Fetching documents 5 times with an interval of 5s.
         - Max retries reaached : 
             - go to watch state

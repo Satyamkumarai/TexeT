@@ -64,24 +64,40 @@ def testdb():
 #Pdf Download 
 @bp.route("/pdf/download/<uuid>" ,methods=['GET'])
 def download_pdf(uuid):
-    work_doc = mongo.db.queue.find_one({"uuid":uuid})
-    if work_doc:
-        if work_doc.get('startTime',None) == None:  #File not yet started to be processed..
-            return Response(json_resp("File waiting to be processed in the queue",0),200,mimetype="application/json")
-        if work_doc.get('endTime',None) == None:    #File processing started but yet to be finished
-            return Response(json_resp("File is being Processed Please Wait",0),200,mimetype="application/json")
+    """ Handle download """
 
-        #The file has been processed 
-        if work_doc.get('error'):
-            return Response(json_resp("An Error Occured while processing the file ",1),200,mimetype="application/json")
-        path_to_download_dir = os.path.join(current_app.instance_path, work_doc['output'])
+    #find the doc in the `data` collection
+    work_data_doc = mongo.db.data.find_one({"uuid":uuid})
 
-        download_filename = work_doc['uuid'] + "-download" + ".pdf"
+    if work_data_doc: 
+        # find the corresponding work in the queue
+        work_doc = mongo.db.queue.find_one({"taskData":ObjectId(work_data_doc.get('_id'))})
+        if work_doc:
+            
+            #File not yet started to be processed..
+            if work_doc.get('startTime',None) == None:  
+                return Response(json_resp("File waiting to be processed in the queue",0),200,mimetype="application/json")
+            
+            #File processing started but yet to be finished
+            if work_doc.get('endTime',None) == None:    
+                return Response(json_resp("File is being Processed Please Wait",0),200,mimetype="application/json")
 
-        path_to_file = os.path.join(path_to_download_dir,download_filename) #DEBUG
-        print("Returning file ",path_to_file) #DEBUG
-        return  send_from_directory(path_to_download_dir,download_filename)
+            #The file has been processed 
+            # An error Occured while processing file
+            if work_doc.get('error'):
+                return Response(json_resp("An Error Occured while processing the file ",1),200,mimetype="application/json")
 
+            # Now return the file                 
+            path_to_download_dir = os.path.join(current_app.instance_path, work_data_doc['output'])
+
+            download_filename = work_data_doc['uuid'] + "-download" + ".pdf"
+
+            path_to_file = os.path.join(path_to_download_dir,download_filename) #DEBUG
+            print("Returning file ",path_to_file) #DEBUG
+            return  send_from_directory(path_to_download_dir,download_filename)
+        else:
+            # if the work no longer exists in the queue Delete the correspondin work_data_doc as it is an orphan.. 
+            mongo.db.data.find_one_and_delete({"_id":ObjectId(work_data_doc.get('_id'))})
     return Response(json_resp("File Not Found!",1),404,mimetype="application/json")
 
 
@@ -102,9 +118,13 @@ def process_pdf():
             return Response(json_resp("Invalid filename",1), 400, mimetype='application/json')
         if file and allowed_file(file.filename):
 
-            #I am not checking if the file already exists cuz the possibility of that being the case is low (since we have a 128 bit random number)
-            #Create a random uuid for the file 
-            file_uuid = str(uuid.uuid4())   
+            # create a task             
+            #and it's corresponding data 
+            task = Task(False)
+            task_data = task.taskData
+
+            # get a random uuid 
+            file_uuid = task_data.uuid
 
             #save the file locally 
             local_save_dir = os.path.join(current_app.instance_path, PDF_UPLOAD_FOLDER)
@@ -112,15 +132,13 @@ def process_pdf():
             file.save(local_filename)
             print("Saving the file to %s " % local_filename)  #DEBUG
 
-            #set the data for the queeue
-            task = Task(file_uuid,False).to_dict()
+            # upload the task to the queue 
+            # and the corresponding data to the data collection
+            mongo.db.queue.insert_one(task.to_dict()) #DEBUG
+            mongo.db.data.insert_one(task_data.to_dict())
 
+            print("Uploaded Task to DB",task,"and ", task_data )
 
-
-            # upload the task to the db queue 
-            mongo.db.queue.insert_one(task) #DEBUG
-            print("Uploaded Task to DB",task)
-            # run(["cp",os.path.join(current_app.instance_path, PDF_UPLOAD_FOLDER, secure_filename(file_uuid+".pdf")),os.path.join(current_app.instance_path, DOWNLOAD_FOLDER, secure_filename(file_uuid+"-download.pdf"))])            
             #return the download Url
             download_url = url_for('main.download_pdf',uuid=file_uuid)
             print(f"Returning Download url:{download_url}")
@@ -155,9 +173,13 @@ def upload_images():
                 print("EMPTY FILE ? ")  #DEBUG
                 print(file )#DEBUG
                 return Response(json_resp("Empty file !",1), 400, mimetype='application/json')
-        #For Each file 
-        folder_uuid = str(uuid.uuid4())
+        # create the task and it's data
+        image_task = Task(True)
+        image_task_data = image_task.taskData
+
+
         #Create the folder ..
+        folder_uuid = image_task_data.uuid
         local_save_dir  = os.path.join(current_app.instance_path,IMAGE_UPLOAD_FOLDER)
         local_save_dir  = os.path.join (local_save_dir,folder_uuid)
         print("Saving the file in %s dir "%local_save_dir) #DEBUG
@@ -174,12 +196,12 @@ def upload_images():
             file.save(local_save_filename_full)
             print(f"Saving -- \t {local_save_filename}") #DEBUG
 
-        #once all the files have been saved upload the task to the image queue
-        image_task = Task(folder_uuid,True).to_dict()
 
         #upload the task
-        mongo.db.queue.insert_one(image_task)
-        print("Task uploaded to DB ",image_task) #DEBUG
+        mongo.db.queue.insert_one(image_task.to_dict())
+        mongo.db.data.insert_one(image_task_data.to_dict())
+
+        print("Task uploaded to DB ",image_task,"and ",image_task_data) #DEBUG
 
         #return the download URL
 
