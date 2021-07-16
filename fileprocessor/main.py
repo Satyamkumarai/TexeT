@@ -15,7 +15,7 @@ from random import randint
 DELAY_INTERVAL = 0.1
 MAX_RETRIES = 5
 INSTANCE_DIR = "../webserver/instance"
-TTL_INDEX_EXPIRE_TIME = 2*60 # Need To change this ..
+TTL_INDEX_EXPIRE_TIME = 30 # Need To change this ..
 client = None
 db = None
 
