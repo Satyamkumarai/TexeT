@@ -1,0 +1,26 @@
+Init:​
+
+    Untill  connected ​
+        Try to connect​
+    Goto watch ​
+Watch:​
+
+    * Watch for delete operation on "queue" collection ​
+        A delete operation occurs ( contains the ):
+            - get the ID of the deleted task.
+            - get the  correspoding taskdata in the data collection and mark it for deletion.
+            - deleted the files from the Storage.
+        goto watch
+
+
+
+Image Processor:
+
+init:
+    while not  connected ​
+        Try to connect​
+    Goto busy
+busy:
+    fetch a doc from the queue:
+
+
