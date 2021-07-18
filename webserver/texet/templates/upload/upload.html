@@ -5,7 +5,7 @@
 <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
 </script>
 <style>
-	div .dz-default span{
+	div .dz-message span{
 		font-size: 2rem;
 	}
 	.dropzone {
@@ -28,7 +28,9 @@
 <div class="fixwidth"></div>
 <div  class="mx-auto w-100">
 
-	<form method="POST" action='{{url_for("main.process_pdf")}}' class="dropzone dz-clickable bg-dark " id="dropper" enctype="multipart/form-data"></form>
+	<form method="POST" action='{{url_for("main.process_pdf")}}' class="dropzone dz-clickable bg-dark " id="dropper" enctype="multipart/form-data">
+		<div class="dz-message" data-dz-message><span>Drop PDF files here</span></div>
+	</form>
 </div>
 <script>
 	Dropzone.options.dropper = {

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block headContent%}
+
+
+{% endblock %}
+{% block content %}
+<h2 class=' text-center' style="  font-size: 2.2rem;width:auto;opacity: 0;">
+    &nbsp;&nbsp;&nbsp;&nbsp;Drop the Images in the Area Below! &nbsp;&nbsp;&nbsp;&nbsp;
+</h2>
+<div class='display-4'>
+    File Status:
+</div>
+<div id='dowload-status' class="download-status display-4"></div>
+<br><br>
+<script>
+    var download = document.getElementById('download-status');
+    const url = "{{url}}"
+    var poll = null;
+    function getStatus(){
+        clearInterval(poll)
+        fetch(url)
+        .then(response => response.json())
+        .then(data=>console.log(data))
+    }
+    document.ready(()=>{
+        poll = setInterval(getStatus,1500)
+    })
+</script>
+{% endblock %}

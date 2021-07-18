@@ -15,21 +15,25 @@
     background-color: #333333;
     border-radius: 2rem;
     }
+
 </style>
 {% endblock%}
 <h1>Scan Document</h1>
 {% block content%}
-<h2 class=' text-center'  style="  font-size: 2.2rem;width:auto" >
+<h2 class=' text-center'  style="  font-size: 2.2rem;width:auto;opacity: 0;" >
     &nbsp;&nbsp;&nbsp;&nbsp;Drop the Images in the Area Below! &nbsp;&nbsp;&nbsp;&nbsp;
 </h2>
 <br>
 <br>
-<div class='form-group '>
+<div class='form-group ' style='position: relative;'> 
 
     <form id='main-form' action="#" method="post" enctype="multipart/form-data">
        
         <label for="fileInput" class="" >
-            
+            <h2 class='centerize' style="position: absolute;left: 23%;top: 35%;">
+                Drop You Images Here!
+
+            </h2>
         </label><br>
             <input size="60" class='form-control-file' id='fileInput' type="file" accept="image/*" multiple name="images"  required capture>
         <button class="btn btn-outline-warning btn-lg" id="submitButton" type='submit'>
