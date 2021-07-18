@@ -24,7 +24,7 @@ bp = Blueprint('main',__name__)
 
 @bp.route('/',methods = ['GET'])
 def root():
-    return render_template("index.html",title="TexeT")
+    return render_template("index.html",title="TexeT",nav=0)
 
 
 
@@ -32,7 +32,7 @@ def root():
 
 @bp.route('/uploadpdf',methods=['GET'])
 def uploadpdf( ):
-    return render_template("upload/upload.html")
+    return render_template("upload/upload.html",title="TexeT | PDF " , nav=2)
 
 
 
@@ -41,7 +41,7 @@ def uploadpdf( ):
 #Scan Html Page
 @bp.route('/scan',methods=['GET'])
 def scan():
-    return render_template("scan/scan.html",title="TeXeT")
+    return render_template("scan/scan.html",title="TeXeT | IMAGES",nav=1)
 
 
 

@@ -1,9 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="/uploadpdf" method='GET'>
 
-    <button type="submit">Upload Pdf</button>
-    <button type="submit" formaction="/scan">Scan</button>
-  
-  </form>
+
+<main role="main" class="inner cover">
+	<h1 class="cover-heading ">Welcome to TexeT </h1><br><br>
+	<div class="fixwidth" ></div>
+	<p class="lead text-break" >A web application that lets you OCR your
+		PDF and Images for easy searchability..
+	<br><br><br>
+	<div class="text-center ">
+		<div class="my-auto">
+			<p class="lead">
+				<a class="btn btn-xlarge btn-outline-danger  " href="{{url_for('main.scan')}}" type="submit">IMAGES</a>
+			</p>
+			<br>
+			<h1>OR</h1>
+			<br>
+			<p class="lead">
+				<a class='btn btn-xlarge btn-outline-warning' href="{{url_for('main.uploadpdf')}}">PDF</a>
+			</p>
+		</div>
+	</div>
+
+	</p>
+	<br><br><br>
+</main>
 {%endblock%}

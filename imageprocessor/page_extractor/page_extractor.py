@@ -133,7 +133,7 @@ if __name__ == "__main__":
         preprocessors = [
             # Resizer(output_process = False), 
             # FastDenoiser(strength = 5, output_process = False),
-            OtsuThresholder(output_process = False)
+           OtsuThresholder(output_process = False)
         ],
         corner_detector = HoughLineCornerDetector(
             rho_acc = 1,

@@ -1,15 +1,50 @@
 {% extends 'base.html' %}
+<script defer src="{{url_for('static',filename='js/scan.js')}}"></script>
+
+{% block headContent %}
+<style>
+    input[type="file"]{
+        display: none;
+    }
+    label{
+        min-width: 100%;
+    max-width: 50vw;
+    height: 33vh;
+    justify-content: center;
+    border: 2px solid #8ec4ffb8;
+    background-color: #333333;
+    border-radius: 2rem;
+    }
+</style>
+{% endblock%}
 <h1>Scan Document</h1>
 {% block content%}
-<script defer src="{{url_for('static',filename='js/scan.js')}}"></script>
-<!-- Camera -->
-<form id='main-form' action="#" method="post" enctype="multipart/form-data">
-    <input id='fileInput' type="file" accept="image/*" multiple name="images" capture>
-    <button id="submitButton" type='submit'>
-        Submit
-    </button>
-</form>
-<div id="downloadlinks"></div>
+<h2 class=' fixwidth text-center' >
+    Drop the Images in the Area Below!
+</h2>
+<br>
+<br>
+<div class='form-group '>
+
+    <form id='main-form' action="#" method="post" enctype="multipart/form-data">
+       
+        <label for="fileInput" class="" >
+            
+        </label><br>
+            <input size="60" class='form-control-file' id='fileInput' type="file" accept="image/*" multiple name="images"  required capture>
+        <button class="btn btn-outline-warning btn-lg" id="submitButton" type='submit'>
+            Submit
+        </button>
+    </form>
+</div>
+
+
+<br><br>
+<div id="downloadlinks" class="text-left my-auto download-hidden">
+	<p style="font-size:2rem;">
+		Download Links To your Files:
+	</p>
+</div>
 <div id='file-list-display'></div>
 <script>
     const form = document.getElementById('main-form')
@@ -34,7 +69,9 @@
                     a.href = response.downloadUrl
                     a.text = "Click Here To Download PDF"
                     div.appendChild(a)
-                    document.getElementById('downloadlinks').appendChild(div)
+                    cont =document.getElementById('downloadlinks')
+                    cont.classList.remove('download-hidden')
+                    cont.appendChild(div)
                 }
                 form.reset()
             }
@@ -51,6 +88,5 @@
         const files = fileInput.files;
         uploadFile(files);
     });
-
 </script>
 {% endblock content%}

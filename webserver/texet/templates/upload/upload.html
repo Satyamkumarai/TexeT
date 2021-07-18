@@ -4,18 +4,31 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/basic.min.css" />
 <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
 </script>
+<style>
+	div .dz-default span{
+		font-size: 2rem;
+	}
+	.dropzone {
+    flex-direction: row;
+    display: flex;
+    min-height: 33vh;
+    border: 2px solid rgba(0,0,0,0.3);
+	border-radius: 2rem;
+    background: white;
+    padding: 20px 20px;
+    justify-content: center;
+    align-items: center;
+}
 
+	
+</style>
 
 {% endblock %}
 {% block content %}
-<h2>
-	Drop Multiple files 
-	And click the corresponding Download links
-</h2>
-<div style="max-width: 50vw;">
+<div class="fixwidth"></div>
+<div  class="mx-auto w-100">
 
-	<form method="POST" action='/pdf/upload' class="dropzone dz-clickable" id="dropper" enctype="multipart/form-data">
-	</form>
+	<form method="POST" action='{{url_for("main.process_pdf")}}' class="dropzone dz-clickable bg-dark " id="dropper" enctype="multipart/form-data"></form>
 </div>
 <script>
 	Dropzone.options.dropper = {
@@ -27,11 +40,14 @@
 			if (response.error == 0){
 			//add the download link if successful!   This basically adds divs with a tags containing the download links
 				div = document.createElement('div')
+				div.className  += 'downloadLink'
 				a = document.createElement('a')
 				a.href = response.downloadUrl
 				a.text= file.name
 				div.appendChild(a)
-				document.getElementById('downloadlinks').appendChild(div)
+				cont = document.getElementById('downloadlinks')
+				cont.classList.remove('download-hidden')
+				cont.appendChild(div)
 			}
 			return file.previewElement.classList.add("dz-success");
 		},
@@ -44,7 +60,9 @@
 </script>
 
 
-<div id="downloadlinks">
-
+<div id="downloadlinks" class="text-left my-auto download-hidden">
+	<p style="font-size:2rem;">
+		Download Links To your Files:
+	</p>
 </div>
 {% endblock %}

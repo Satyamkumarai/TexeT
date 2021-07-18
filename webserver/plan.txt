@@ -1,0 +1,29 @@
+
+Tools Used
+
+    Docker to containerize each of these
+
+    Webserver :
+        * Flask  -> Serving http requests 
+        * Bootstrap (Css framework ) -> stypling 
+        * Flask jinja templates + Html  -> rendering webpages 
+        * Pymongo (python driver for MongoDB) -> interfacing with the database
+    Fileprocessor :
+        * Ocrmypdf Docker Image -> to act as the base image for the Fileprocessor (also Ocring the PDF)
+        * Python (pure python code)-> to implement the State machine 
+        * Python Libraries :
+            - Pymongo ->        Connecting to the DB
+    Image Processor :
+        * Python Libraries 
+            - Numpy, SkLearn            Performing Edge detection and finding corners
+            - OpenCv, Pillow            reading in and manipulating the Images
+            - img2pdf                   Converting the images to pdf
+            - Pymongo                   Connecting to the DB
+        * Python (pure python code)-> to implement the State machine 
+
+
+    Cleaner :
+        * Python Libraries:
+            - Pymongo                Connecting to the DB
+            - Shutils                Removing the files from the filesystem
+        * Python (pure python code)-> to implement the State machine 
