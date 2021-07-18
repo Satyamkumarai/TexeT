@@ -58,7 +58,9 @@ def testdb():
 
 
 
-
+@bp.route("/download",methods=['GET'])
+def download():
+    return render_template('download/download.html',title="TexeT | Download")
 
 
 #Pdf Download 

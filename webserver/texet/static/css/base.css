@@ -95,6 +95,9 @@ width: 50vw !important;
 	opacity: 0;
 }
 
+.nav-link{
+  font-size: 1.3rem;
+}
 blue{
   color:blue;
 }
