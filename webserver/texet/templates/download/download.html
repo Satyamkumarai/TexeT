@@ -10,19 +10,69 @@
 <div class='display-4'>
     File Status:
 </div>
-<div id='dowload-status' class="download-status display-4"></div>
+<div id='downloadstatus' class="download-status display-4">
+    <span id='status' style="font-size: 2rem;"></span>
+</div>
 <br><br>
 <script>
     var download = document.getElementById('download-status');
-    const url = "{{url}}"
+    const url = "{{url_for('main.download_status',uuid=uuid)}}"
+    const downloadurl = "{{url_for('main.download_pdf',uuid=uuid)}}"
     var poll = null;
-    function getStatus(){
-        clearInterval(poll)
-        fetch(url)
-        .then(response => response.json())
-        .then(data=>console.log(data))
+    var done = false;
+
+    function blobToFile(theBlob, fileName){
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
+}
+    function updateStatus(status){
+        
+        console.log($("#status")[0].innerText=status)
     }
-    document.ready(()=>{
+    function getStatus(){
+        
+        fetch(url)
+        .then(response=>{
+            if (!response.ok){
+                new Error("404 not found")
+            }else{
+                console.log("resolveing")
+                return response
+            }
+        })
+        .then(okres=>okres.json())
+        .then(data=>{
+            
+            if (data.message.toLowerCase()=='done'){
+                console.log("Up!")
+                clearInterval(poll)
+                fetch(downloadurl)
+                .then(resp=>resp.blob())
+                .then(blob=>{
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+
+                    saveurl = window.URL.createObjectURL(blob);
+                    a.href =saveurl;
+                    a.download = "{{uuid}}.pdf";
+                    a.click();
+                    window.URL.revokeObjectURL(saveurl);
+                    updateStatus("Downloaded!")
+
+                })
+            }else{
+                updateStatus(data.message)
+            }
+        }).catch(e=>{
+            updateStatus('File Not Found!')
+            console.log("clearing poll",poll)
+            clearInterval(poll)
+        })
+        
+    }
+    $(document).ready(()=>{
         poll = setInterval(getStatus,1500)
     })
 </script>

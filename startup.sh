@@ -2,7 +2,7 @@ file="../processes.tmp"
 touch $file 
 cd webserver/
 source env/bin/activate
-flask run &
+flask run -h 0.0.0.0 &
 echo kill -9 $!>>$file
 deactivate 
 cd ../fileprocessor 

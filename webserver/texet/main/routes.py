@@ -58,9 +58,58 @@ def testdb():
 
 
 
-@bp.route("/download",methods=['GET'])
-def download():
-    return render_template('download/download.html',title="TexeT | Download")
+@bp.route("/download/<uuid>",methods=['GET'])
+def download(uuid):
+    work_data_doc = mongo.db.data.find_one({"uuid":uuid})
+
+    if work_data_doc: 
+        return render_template('download/download.html',title="TexeT | Download",uuid=uuid)
+    return Response("File Not found",404,mimetype='text/html')
+
+
+#download Status!
+@bp.route("/status/download/<uuid>" ,methods=['GET'])
+def download_status(uuid):
+    """ Handle download """
+
+    #find the doc in the `data` collection
+    work_data_doc = mongo.db.data.find_one({"uuid":uuid})
+
+    if work_data_doc: 
+        # find the corresponding work in the queue
+        work_doc = mongo.db.queue.find_one({"taskData":ObjectId(work_data_doc.get('_id'))})
+        if work_doc:
+            
+            #File not yet started to be processed..
+            if work_doc.get('startTime',None) == None:  
+                return Response(json_resp("File waiting to be processed in the queue",0),200,mimetype="application/json")
+            
+            #File processing started but yet to be finished
+            if work_doc.get('endTime',None) == None:    
+                return Response(json_resp("File is being Processed Please Wait",0),200,mimetype="application/json")
+
+            #The file has been processed 
+            # An error Occured while processing file
+            if work_doc.get('error'):
+                return Response(json_resp("An Error Occured while processing the file ",1),200,mimetype="application/json")
+
+            # Now return the file                 
+            path_to_download_dir = os.path.join(current_app.instance_path, work_data_doc['output'])
+
+            download_filename = work_data_doc['uuid'] + "-download" + ".pdf"
+
+            path_to_file = os.path.join(path_to_download_dir,download_filename) #DEBUG
+            print("Returning file status 200 ",path_to_file) #DEBUG
+            return  Response(json_resp("Done",0),200,mimetype="application/json")
+        else:
+            # if the work no longer exists in the queue Delete the correspondin work_data_doc as it is an orphan.. 
+            mongo.db.data.find_one_and_delete({"_id":ObjectId(work_data_doc.get('_id'))})
+    return Response(json_resp("File Not Found!",1),404,mimetype="application/json")
+
+
+
+
+
 
 
 #Pdf Download 
@@ -142,7 +191,7 @@ def process_pdf():
             print("Uploaded Task to DB",task,"and ", task_data )
 
             #return the download Url
-            download_url = url_for('main.download_pdf',uuid=file_uuid)
+            download_url = url_for('main.download',uuid=file_uuid)
             print(f"Returning Download url:{download_url}")
             return Response(json_resp("File Uploaded!",0,download_url))
 
@@ -207,7 +256,7 @@ def upload_images():
 
         #return the download URL
 
-        download_url = url_for('main.download_pdf',uuid=folder_uuid)
+        download_url = url_for('main.download',uuid=folder_uuid)
         print("Returned Download UUID %s ",download_url)  #DEBUG
         return Response(json_resp("File Uploaded!",0,download_url))
 

@@ -3,53 +3,85 @@
 
 {% block headContent %}
 <style>
-    input[type="file"]{
+    input[type="file"] {
         display: none;
     }
-    label{
-    min-width: 100%;
-    max-width: 50vw;
-    height: 33vh;
-    justify-content: center;
-    border: 2px solid #6ae8fcb3;
-    background-color: #333333;
-    border-radius: 2rem;
+
+    label {
+        min-width: 100%;
+        max-width: 50vw;
+        height: 33vh;
+        min-height: 33vh;
+        justify-content: center;
+        border: 2px solid #6ae8fcb3;
+        background-color: #333333;
+        border-radius: 2rem;
+        overflow: auto;
     }
 
+/* .scrollable::-webkit-scrollbar {
+  display: none;
+} */
+
+/* Hide scrollbar for IE, Edge and Firefox */
+
+.scrollable::-webkit-scrollbar {
+    width: 12px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+img.preview-img {
+    margin: 1rem;
+}
 </style>
 {% endblock%}
 <h1>Scan Document</h1>
 {% block content%}
-<h2 class=' text-center'  style="  font-size: 2.2rem;width:auto;opacity: 0;" >
-    &nbsp;&nbsp;&nbsp;&nbsp;Drop the Images in the Area Below! &nbsp;&nbsp;&nbsp;&nbsp;
-</h2>
+
 <br>
 <br>
-<div class='form-group ' style='position: relative;'> 
+<br>
+<br>
+
+<div class='form-group ' style='position: relative;'>
 
     <form id='main-form' action="#" method="post" enctype="multipart/form-data">
-       
-        <label for="fileInput" class="" >
-            <h2 class='centerize' style="position: absolute;left: 23%;top: 35%;">
+
+        <label for="fileInput" class="scrollable" style='position: relative;'>
+            <h2 id='drop-message'class='centerize' style="position: absolute;left: 23%;top: 42%;">
                 Drop You Images Here!
 
             </h2>
+            <div id='file-list-display'>
+
+            </div>
         </label><br>
-            <input size="60" class='form-control-file' id='fileInput' type="file" accept="image/*" multiple name="images"  required capture>
-        <button class="btn btn-outline-warning btn-lg" id="submitButton" type='submit'>
+        <input size="60" class='form-control-file' id='fileInput' type="file" accept="image/*" multiple name="images"
+            required capture>
+        
+        <button class="btn btn-outline-warning btn-lg mt-5" id="submitButton" type='submit'>
             Submit
         </button>
     </form>
 </div>
+<h2 class=' text-center' style="  font-size: 2.2rem;width:auto;opacity: 0;">
+    &nbsp;&nbsp;&nbsp;&nbsp;Drop the Images in the Area Below! &nbsp;&nbsp;&nbsp;&nbsp;
+</h2>
 
-
-<br><br>
 <div id="downloadlinks" class="text-left my-auto download-hidden">
-	<p style="font-size:2rem;">
-		Download Links To your Files:
-	</p>
+    <p style="font-size:2rem;">
+        Download Links To your Files:
+    </p>
 </div>
-<div id='file-list-display'></div>
 <script>
     const form = document.getElementById('main-form')
     const submitBtn = document.querySelector("#submitButton");
@@ -72,8 +104,12 @@
                     a = document.createElement('a')
                     a.href = response.downloadUrl
                     a.text = "Click Here To Download PDF"
+                    a.classList.add('btn')
+                    a.classList.add('btn-sm')
+                    a.classList.add('btn-primary')
+
                     div.appendChild(a)
-                    cont =document.getElementById('downloadlinks')
+                    cont = document.getElementById('downloadlinks')
                     cont.classList.remove('download-hidden')
                     cont.appendChild(div)
                 }
@@ -92,5 +128,54 @@
         const files = fileInput.files;
         uploadFile(files);
     });
+
+    // fileInput.addEventListener('change', evt => {
+    //     const [file] = fileInput.files
+    //     images = fileListDiv.children
+    //     if (file) 
+    //         {  // on change reset the children..
+    //         for (let i = 0; i < file.length; i++) {
+    //             console.log(file);
+    //         }
+    //     }
+    // })
+    var imageReferences = [] // list of global url refs
+    function previewImages(images){
+        console.log(imageReferences,"existing ones")
+        //first get rid of refs
+        imageReferences.forEach((url)=>{
+            URL.revokeObjectURL(url);
+        })
+        //next clear the html
+        fileListDiv.innerHTML = ""   //kill all the existing children
+        for (let i=0;i<images.length;i++){
+            let img = document.createElement('img')
+            url = URL.createObjectURL(images[i])
+            imageReferences.push(url)  // save the url refs so that later they can be cleared
+            img.src = url
+            img.height=100;
+            img.width=100
+            img.classList.add('preview-img')
+            console.log('added url !',url)
+            fileListDiv.appendChild(img)
+        }
+        if (images.length){
+            console.log($('#drop-message')[0].style.opacity=0)
+        }
+    }
+
+    $(document).ready(function(){
+    $("input[type=file]").click(function(){
+        $(this).val("");
+    });
+
+    $("input[type=file]").change(function(){
+
+        let images = $(this)[0].files
+        previewImages(images)
+    });
+});
+
+
 </script>
 {% endblock content%}
