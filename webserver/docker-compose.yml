@@ -1,8 +1,0 @@
-version: "3.7"
-services: 
-    texet:
-        image: python:3.8-slim-buster
-        ports: 
-            - 3000:3000
-        working_dir: /texet
-         

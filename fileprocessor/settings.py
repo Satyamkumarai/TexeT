@@ -19,8 +19,12 @@ dbname = getenv('DB_NAME')
 PDF_UPLOAD_FOLDER = getenv('PDF_UPLOAD_FOLDER')
 IMAGE_UPLOAD_FOLDER = getenv('IMAGE_UPLOAD_FOLDER')
 DOWNLOAD_FOLDER = getenv('DOWNLOAD_FOLDER')
+INSTANCE_FOLDER = getenv('INSTANCE_FOLDER')
+
 #Handling defaults..
 if PDF_UPLOAD_FOLDER == None:
     PDF_UPLOAD_FOLDER = "uploaded/pdf"
 if IMAGE_UPLOAD_FOLDER == None:
     IMAGE_UPLOAD_FOLDER = "uploaded/image"
+if INSTANCE_FOLDER == None:
+    INSTANCE_FOLDER = "../webserver/instance"

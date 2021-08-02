@@ -1,7 +1,6 @@
 from math import sin, cos, atan
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 from processors import Opener, Closer, EdgeDetector
 from sklearn.cluster import KMeans
 from itertools import combinations

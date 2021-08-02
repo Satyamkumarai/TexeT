@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from skimage.filters import threshold_otsu
-from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from itertools import combinations
 from collections import defaultdict
@@ -147,11 +146,15 @@ if __name__ == "__main__":
     images =[]
     upload_dir=args.input_image
     image_files = list(os.listdir(upload_dir))
+    print(image_files , "Will be processed")
     for index,filename in enumerate(image_files):
         print(f"Processing image: {filename} ")
         image_file_name = os.path.join(upload_dir,filename)
         try:
             extracted = page_extractor(image_file_name)
+            print("Converting to RGB")
+            extracted = extracted.convert('RGB')
+            print("Done!")
             cv2.imwrite(image_file_name,extracted)
         except:
             print(f"Error Extracting page from {image_file_name} ignoring..")

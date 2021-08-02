@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import pymongo
 from bson.objectid import ObjectId
 import time 
-from settings import username,password,dbname
+from settings import username,password,dbname,INSTANCE_FOLDER
 from time import sleep
 from datetime import datetime
 import os
@@ -14,7 +14,7 @@ from random import randint
 
 DELAY_INTERVAL = 0.1
 MAX_RETRIES = 5
-INSTANCE_DIR = "../webserver/instance"
+# INSTANCE_FOLDER = "../webserver/instance"
 TTL_INDEX_EXPIRE_TIME = 30 # Need To change this ..
 client = None
 db = None
@@ -26,8 +26,8 @@ def do_work(work_data):
         downloaddir = work_data.get('output')
         filename = work_data.get('uuid')
         print(work_data)  #DEBUG
-        uploaddir = os.path.join(INSTANCE_DIR,uploaddir)
-        downloaddir = os.path.join(INSTANCE_DIR,downloaddir)
+        uploaddir = os.path.join(INSTANCE_FOLDER,uploaddir)
+        downloaddir = os.path.join(INSTANCE_FOLDER,downloaddir)
         print(uploaddir,downloaddir,"upload dir amd download dir")  #DEBUG
         up_file = os.path.join(uploaddir, filename+".pdf")
         down_file = os.path.join(downloaddir, filename+'-download.pdf')
