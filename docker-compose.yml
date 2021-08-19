@@ -4,7 +4,7 @@ services:
                 # image:  webserver
                 build:  webserver/
                 volumes:
-                        - texet_volume:/webserver/instance
+                        - texetvolume:/webserver/instance
                 restart:  always
                 ports:
                         - "3000:3000"
@@ -14,7 +14,7 @@ services:
                 # image:  fileprocessor
                 build:  fileprocessor/
                 volumes:
-                        - texet_volume:/webserver/instance
+                        - texetvolume:/webserver/instance
                 restart:  always
                 env_file:
                         - .env
@@ -22,7 +22,7 @@ services:
                 # image:  imageprocessor
                 build:  imageprocessor/
                 volumes:
-                        - texet_volume:/webserver/instance
+                        - texetvolume:/webserver/instance
                 restart:  always
                 env_file:
                         - .env
@@ -31,13 +31,13 @@ services:
                 # image:  cleaner
                 build:  cleaner/
                 volumes:
-                        - texet_volume:/webserver/instance
+                        - texetvolume:/webserver/instance
                 restart:  always
                 env_file:
                         - .env
 
 volumes:
-        texet_volume:
+        texetvolume:
               
 
 
