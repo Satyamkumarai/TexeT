@@ -1,4 +1,6 @@
-FROM jbarlow83/ocrmypdf:latest
+# Latest version seems to use ubunutu which has problems with the apt-get update because of some bug (gpg key error)
+# https://stackoverflow.com/questions/66319610/gpg-error-in-ubuntu-21-04-after-second-apt-get-update-during-docker-build
+FROM jbarlow83/ocrmypdf:v11.0.0  
 WORKDIR /fileprocessor
 COPY requirements.txt requirements.txt
 RUN apt-get update
